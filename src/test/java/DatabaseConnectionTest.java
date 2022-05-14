@@ -124,7 +124,7 @@ class DatabaseConnectionTest {
     @Test
     void generateToDoListsTable() {
         try {
-            DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres","postgres","722713");
+            DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres","postgres","*****");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
