@@ -9,7 +9,7 @@ public class DatabaseConnection {
     //format is driver: provider://machine(ip or dns):port/database
     private String url = "jdbc:postgresql://localhost:5432/postgres";
     private String username = "postgres";
-    private String password = "722713";
+    private String password = "*****";
     Connection connection;
 
     public DatabaseConnection() {
