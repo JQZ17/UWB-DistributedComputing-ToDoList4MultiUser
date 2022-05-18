@@ -224,8 +224,8 @@ public class DatabaseConnection {
         return true;
     }
 
-    public boolean updateTaskStatus(String user_id, String status, String task_id){
-        boolean allowed = checkAccess(user_id);
+    public boolean updateTaskStatus(String user_name, String list_name, String status, String task_name){
+        boolean allowed = checkAccess(user_name);
         if(! allowed){
             System.out.println("Invalid user");
             return false;
@@ -243,6 +243,7 @@ public class DatabaseConnection {
         }
         Date date = new Date();
         Timestamp ts = new Timestamp(date.getTime());
+        String task_id = user_name+"_"+list_name+"_"+task_name;
         String update_task_status_sql = "UPDATE Task SET task_status = " + status+" LastModifiedDate = " + ts +" WHERE task_id ="+ task_id+";";
         try{
             Statement stmt = connection.createStatement();
