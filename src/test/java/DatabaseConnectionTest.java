@@ -26,30 +26,31 @@ class DatabaseConnectionTest {
     public DatabaseConnectionTest() {
         this.databaseConnection = new DatabaseConnection();
         databaseConnection.addUser("me","123");
+
    }
 
 
     @Test
     void addList() {
         /*normal execution*/
-        Assert.assertTrue(databaseConnection.addList("me","Apple","individual"));
+        Assert.assertTrue(databaseConnection.addList("me","Apple","Individual"));
         /*error condition 1: duplicate lists*/
-        Assert.assertFalse(databaseConnection.addList("me","Apple","individual"));
+        Assert.assertFalse(databaseConnection.addList("me","Apple","Individual"));
         /*error condition 2: duplicate lists*/
-        Assert.assertFalse(databaseConnection.addList("me","Apple","ok"));
+        Assert.assertEquals(false, databaseConnection.addList("me", "Apple", "ok"));
     }
 
     @Test
     void deleteList() {
         /*normal execution*/
-        Assert.assertTrue(databaseConnection.deleteList("me","Apple"));
+        Assert.assertEquals(true, databaseConnection.deleteList("me", "Apple"));
         /*error condition 1: delete not exist to-do list*/
         Assert.assertFalse(databaseConnection.deleteList("me","Banana"));
     }
 
     @Test
     void deleteAllLists() {
-        databaseConnection.addList("me","Apple","individual");
+        databaseConnection.addList("me","Apple","Individual");
         /*normal execution*/
         Assert.assertTrue(databaseConnection.deleteAllLists("me"));
         /*error condition 1: delete all lists when there is no to-do lists under the specific user*/
@@ -60,7 +61,7 @@ class DatabaseConnectionTest {
     void displayAlListsNames() {
         /*error condition 1: display all lists when there is no to-do lists under a specific user*/
         Assert.assertFalse(databaseConnection.displayAllListsNames("me"));
-        databaseConnection.addList("me","Apple","individual");
+        databaseConnection.addList("me","Apple","Individual");
         /*normal execution*/
         Assert.assertTrue(databaseConnection.displayAllListsNames("me"));
     }
@@ -77,8 +78,8 @@ class DatabaseConnectionTest {
     void deleteTask() {
         /*normal execution*/
         Assert.assertTrue(databaseConnection.deleteTask("write a review","Apple","me"));
-        /*error condition 1: not exist task*/
-        Assert.assertFalse(databaseConnection.deleteTask("write a review","Apple","me"));
+        /*error condition 1: unauthorized user*/
+        Assert.assertFalse(databaseConnection.deleteTask("write a review","Apple","he"));
     }
 
     @Test
@@ -86,8 +87,8 @@ class DatabaseConnectionTest {
         databaseConnection.addTask("write a review","write a review of IoT security problems and solutions","Apple","me");
         /*normal execution*/
         Assert.assertTrue(databaseConnection.deleteAllTasks("me","Apple"));
-        /*error condition 1: delete all tasks when there is no tasks under the specific to-do list*/
-        Assert.assertFalse(databaseConnection.deleteAllTasks("me","banana"));
+        /*error condition 1: unauthorized user*/
+        Assert.assertFalse(databaseConnection.deleteAllTasks("he","Apple"));
     }
 
     @Test
@@ -96,19 +97,17 @@ class DatabaseConnectionTest {
         /*normal execution*/
         Assert.assertTrue(databaseConnection.displayAllTaskNames("me","Apple"));
         databaseConnection.deleteAllTasks("me","Apple");
-        /*error condition 1: display all tasks' names when there is no task  under a specific to-do list*/
-        Assert.assertFalse(databaseConnection.displayAllTaskNames("me","Apple"));
-        /*error condition 2: display all tasks' names when there is no such to-do list*/
-        Assert.assertFalse(databaseConnection.displayAllTaskNames("me","banana"));
+        /*error condition 2: unauthorized user*/
+        Assert.assertFalse(databaseConnection.displayAllTaskNames("he","banana"));
     }
 
     @Test
     void updateTaskStatus() {
         databaseConnection.addTask("write a review","write a review of IoT security problems and solutions","Apple","me");
         /*normal execution*/
-        Assert.assertTrue(databaseConnection.updateTaskStatus("me","In-Progress","write a review"));
+        Assert.assertTrue(databaseConnection.updateTaskStatus("me", "Apple","In-Progress","write a review"));
         /*error condition 1: the task status for updating is not correct status type (correct status type includes In-Progress, Not-Started, Completed)*/
-        Assert.assertFalse(databaseConnection.updateTaskStatus("me","abc","write a review"));
+        Assert.assertFalse(databaseConnection.updateTaskStatus("me","Apple","abc","write a review"));
     }
 
 
@@ -117,19 +116,6 @@ class DatabaseConnectionTest {
         /*normal execution*/
         Assert.assertTrue(databaseConnection.updateTaskContent("me","Apple","write a review of database security issues","write a review"));
         /*error condition 1: update tasks' content when there is no such task*/
-        Assert.assertFalse(databaseConnection.updateTaskContent("me", "Apple","a","a"));
-    }
-
-
-    @Test
-    void generateToDoListsTable() {
-        try {
-            DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres","postgres","*****");
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
-        System.out.println("Connected to database" );
+        Assert.assertFalse(databaseConnection.updateTaskContent("me", "a","a","a"));
     }
 }
